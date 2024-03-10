@@ -1,1 +1,2 @@
-4TH SEMESTER AI COURSE ASSIGNMENTS,QUIZZES,LAB TASKS AND COURSE MATERIAL.
+
+This repository contains assignments, quizzes (solutions not included), lab tasks, and resources for the 4th Semester Artificial Intelligence course.
