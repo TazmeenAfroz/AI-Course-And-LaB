@@ -1,0 +1,148 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Assignment 1 Report }
+\author{Tazmeen Afroz \\22P-9252 \\ BS-AI-4A}
+\date{\today}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Automated Readability Index(ARI) is a score designed to gauge the readability of a text, and can be used
+as a feature for developing models for text authorship.
+This document presents a Python program that calculates the ARI for a set of text files. The program reads the content of each file, counts the number of sentences, words, and characters, and then calculates the ARI. 
+\end{abstract}
+
+\section{Introduction}
+
+The purpose of this assignment is to get you started with Python programming, developing
+familiarity with Google Colab and its connectivity with Google Drive.
+
+
+\section{Program Description}
+
+\subsection{Counting Sentences}
+
+The function \texttt{count\_sentences(text)} is used to count the number of sentences in a given text. A sentence is defined as any sequence of characters ending with a sentence terminator. The sentence terminators considered in this program are a period (.), colon (:), semicolon (;), question mark (?), and exclamation mark (!).
+
+The function iterates over each character in the text. If the character is a sentence terminator, it increments a counter (\texttt{sentence\_count}). If the text does not contain any sentence terminators, the function assumes that the text consists of one sentence.
+
+Here is the Python code for the function:
+
+\begin{lstlisting}[language=Python]
+def count_sentences(text):
+    sentence_count = 0
+    for terminator in text:
+        if terminator in sentence_terminators:
+            sentence_count += 1
+     # If a text has no sentence characters assume it has 1 sentence.
+    return max(sentence_count, 1)
+
+\end{lstlisting}
+
+\subsection{Counting Words}
+The function \texttt{count\_words(text)} is used to count the number of words in a given text. A word is defined as any sequence of characters delimited by a word terminator. The word terminators considered in this program are a space, tab, newline, apostrophe (’), underscore (\_), hyphen (-), comma (,), or sentence terminator.
+
+The function iterates over each character in the text. If the character is a word terminator, it replaces the terminator with a space. This is done to ensure that words are correctly split in the next step. After all terminators have been replaced, the function splits the text into words using the \texttt{split()} method, which splits a string into a list where each word is a list item. The function then returns the number of items in the list, which is the number of words in the text.
+
+Here is the Python code for the function:
+
+\begin{lstlisting}[language=Python]
+def count_words(text):
+    for terminator in words_terminator:
+        text = text.replace(terminator, ' ')
+    words = text.split()
+    return len(words)
+\end{lstlisting}
+
+\subsection{Counting Characters}
+The function \texttt{count\_characters(text)} is used to count the number of characters in a given text. A character is defined as any alphanumeric character, i.e., any letter or digit. The function iterates over each character in the text. If the character is alphanumeric, it increments a counter (\texttt{character\_count}). The function then returns the value of \texttt{character\_count}.
+Here is the Python code for the function:
+
+\begin{lstlisting}[language=Python]
+def count_characters(text):
+    character_count = 0
+    for char in text:
+        if char.isalpha() or char.isdigit():
+            character_count += 1
+    return character_count
+\end{lstlisting}
+
+\subsection{Calculating Automated Readability Index}
+The function \texttt{calculate\_ari(text)} is used to calculate the Automated Readability Index (ARI) for a given text. It first counts the number of sentences, words, and characters in the text using the previously defined functions. It then calculates the ARI using the formula \texttt{4.71 * (characters / words) + 0.5 * (words / sentences) - 21.43}. The result is rounded up to the nearest whole number using the \texttt{math.ceil} function. If the ARI is less than 0, it is set to 0.
+Here is the Python code for the function:
+
+\begin{lstlisting}[language=Python]
+def calculate_ari(text):
+    sentences = count_sentences(text)
+    words = count_words(text)
+    characters = count_characters(text)
+   
+    ari = math.ceil(4.71 * (characters / words) +0.5 * (words / sentences) - 21.43)
+
+    return max(ari,   0)
+
+
+\end{lstlisting}
+\subsection{Printing the Result}
+The function \texttt{print\_result(filename, text, sentences, words, characters, ari)} is used to print the results for a text file. 
+
+\subsection{Returning File Paths}
+The function \texttt{return\_filepath()} returns a list of all .txt files in a specified directory.
+
+\subsection{Testing Files}
+The \texttt{main()} function is the main function of the program. It gets the list of all text files, reads the content of each file, counts the number of sentences, words, and characters, calculates the ARI, and prints the results.
+
+Here is the Python code for these functions:
+
+\begin{lstlisting}[language=Python]
+def print_result(filename, text, sentences, words, characters, ari):
+    print(f'Text File {filename} : {text}')
+    print(f'Number of sentences: {sentences}')
+    print(f'Number of words: {words}')
+    print(f'Number of characters: {characters}')
+    print(f'Readability index: {ari}')
+    print('\n')
+
+
+def return_filepath():
+    base_dir = '/content/drive/MyDrive/AI/'
+    # Get a list of all .txt files in the directory
+    text_files = [os.path.join(base_dir, f) for f in os.listdir(base_dir) if f.endswith('.txt')]
+    return text_files
+
+
+
+def main():
+    text_files = return_filepath()
+    for text_file in text_files:
+        with open(text_file, 'r') as file:
+            text = file.read()
+            sentences = count_sentences(text)
+            words = count_words(text)
+            characters = count_characters(text)
+            ari = calculate_ari(text)
+            print_result(text_file, text, sentences, words, characters, ari)
+\end{lstlisting}
+\section{Output}
+Here is the output of the Python script:
+ \begin{figure}[H]
+ \includegraphics[width=\textwidth]{TEST.png}
+ \caption{Output of the Python script}
+ \end{figure}
+
+\end{document}
